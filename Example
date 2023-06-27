@@ -1,0 +1,38 @@
+
+const { Builder, By, Key, until } = require('selenium-webdriver');
+
+// Define the search term you want to use
+const searchTerm = 'Canada';
+
+async function performSearch() {
+  // Create a new WebDriver instance with Firefox
+  const driver = await new Builder().forBrowser('firefox').build();
+
+  try {
+    // Navigate to the search engine's homepage
+    await driver.get('https://www.google.com/');
+
+    // Locate the search input element and enter the search term
+    const searchInput = await driver.findElement(By.name('q'));
+    await searchInput.sendKeys(searchTerm, Key.RETURN);
+
+    // Wait for the search results to load
+    await driver.wait(until.titleContains(searchTerm));
+
+    // Print the page title (just for demonstration purposes)
+    const pageTitle = await driver.getTitle();
+    console.log('Page title:', pageTitle);
+
+    // Keep the script running to prevent the browser from closing
+    while (true) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  } finally {
+    // Uncomment the following line if you want to close the WebDriver session manually
+    // await driver.quit();
+  }
+}
+
+performSearch().catch((error) => {
+  console.error('An error occurred:', error);
+});
